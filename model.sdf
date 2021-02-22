@@ -1,13 +1,22 @@
+<!--
+Very simple submarine Gazebo model. Created by Oscar Morrison for AUVIC (github.com/uvic-auvic)
+-->
+
+
 <?xml version='1.0'?>
 <sdf version='1.5'>
       <model name = 'submarine'>
             <pose>0 0 1.5 1.5707963267948966 0 0</pose>
             <link name = 'body'>
+                  <!--
+                        Main body housing. pose offset from ocs origin slightly
+                  -->
                   <!-- <pose> 0 0 -0.5 0 0 0 </pose> -->
                   <inertial>
-                        <mass>800.0</mass>
-                        <inertia> <!-- inertias are tricky to compute -->
-                              <!-- http://gazebosim.org/tutorials?tut=inertia&cat=build_robot -->
+                        <!-- this definitely needs to be messed with -->
+                        <mass>50.0</mass>
+                        <inertia>
+                              <!-- From http://gazebosim.org/tutorials?tut=inertia&cat -->
                               <ixx>0.083</ixx>       <!-- for a box: ixx = 0.083 * mass * (y*y + z*z) -->
                               <ixy>0.0</ixy>         <!-- for a box: ixy = 0 -->
                               <ixz>0.0</ixz>         <!-- for a box: ixz = 0 -->
@@ -24,37 +33,31 @@
                                     <length>1.0</length>
                               </cylinder>
                         </geometry>
-                        <!-- <material>
-                              <script>
-                                    <uri>file://media/materials/scripts/gazebo.material</uri>
-                                    <name>Gazebo/grey</name>
-                              </script>
-                        </material> -->
                   </visual>
 
                   <collision name='body_collision'>
                         <geometry>
                               <cylinder>
-                                    <radius>0.3</radius>
-                                    <length>2.6</length>
+                                    <radius>0.15</radius>
+                                    <length>1.0</length>
                               </cylinder>
                         </geometry>
                   </collision>
             </link>
 
             <link name = 'left_thrust'>
-                  <parent>body</parent>
+                  <!-- left thruster housing and mount block -->
                   <pose> -0.3 0 0.3 0 0 0 </pose>
                   <inertial>
-                        <mass>800.0</mass>
-                        <inertia> <!-- inertias are tricky to compute -->
-                              <!-- http://gazebosim.org/tutorials?tut=inertia&cat=build_robot -->
-                              <ixx>0.083</ixx>       <!-- for a box: ixx = 0.083 * mass * (y*y + z*z) -->
-                              <ixy>0.0</ixy>         <!-- for a box: ixy = 0 -->
-                              <ixz>0.0</ixz>         <!-- for a box: ixz = 0 -->
-                              <iyy>0.083</iyy>       <!-- for a box: iyy = 0.083 * mass * (x*x + z*z) -->
-                              <iyz>0.0</iyz>         <!-- for a box: iyz = 0 -->
-                              <izz>0.083</izz>       <!-- for a box: izz = 0.083 * mass * (x*x + y*y) -->
+                        <mass>25.0</mass>
+                        <!-- same source as body inertias -->
+                        <inertia>
+                              <ixx>0.083</ixx>
+                              <ixy>0.0</ixy>
+                              <ixz>0.0</ixz>
+                              <iyy>0.083</iyy>
+                              <iyz>0.0</iyz>
+                              <izz>0.083</izz>
                         </inertia>
                   </inertial>
 
@@ -71,8 +74,8 @@
                   <collision name='left_housing_collision'>
                         <geometry>
                               <cylinder>
-                                    <radius>0.3</radius>
-                                    <length>2.6</length>
+                                    <radius>0.05</radius>
+                                    <length>0.3</length>
                               </cylinder>
                         </geometry>
                   </collision>
@@ -96,19 +99,19 @@
             </link>
 
             <link name = 'right_thrust'>
-                  <parent> body </parent>
+                  <!-- right thruster housing nad mount block -->
                   <pose relative_to = 'body'> 0.3 0 .3 0 3.14 </pose>
                   <!-- pose> -0.3 0 0.3 0 0 2 </pose> -->
                   <inertial>
-                        <mass>800.0</mass>
-                        <inertia> <!-- inertias are tricky to compute -->
-                              <!-- http://gazebosim.org/tutorials?tut=inertia&cat=build_robot -->
-                              <ixx>0.083</ixx>       <!-- for a box: ixx = 0.083 * mass * (y*y + z*z) -->
-                              <ixy>0.0</ixy>         <!-- for a box: ixy = 0 -->
-                              <ixz>0.0</ixz>         <!-- for a box: ixz = 0 -->
-                              <iyy>0.083</iyy>       <!-- for a box: iyy = 0.083 * mass * (x*x + z*z) -->
-                              <iyz>0.0</iyz>         <!-- for a box: iyz = 0 -->
-                              <izz>0.083</izz>       <!-- for a box: izz = 0.083 * mass * (x*x + y*y) -->
+                        <mass>25.0</mass>
+                        <!-- same source as body inertias -->
+                        <inertia>
+                              <ixx>0.083</ixx>
+                              <ixy>0.0</ixy>
+                              <ixz>0.0</ixz>
+                              <iyy>0.083</iyy>
+                              <iyz>0.0</iyz>
+                              <izz>0.083</izz>
                         </inertia>
                   </inertial>
 
@@ -125,8 +128,8 @@
                   <collision name='right_housing_collision'>
                         <geometry>
                               <cylinder>
-                                    <radius>0.3</radius>
-                                    <length>2.6</length>
+                                    <radius>0.05</radius>
+                                    <length>0.3</length>
                               </cylinder>
                         </geometry>
                   </collision>
@@ -148,6 +151,19 @@
                         </geometry>
                   </collision>
             </link>
+
+            <!-- joints -->
+            <joint name = "left_thrust_joint" type = "fixed">
+                  <parent> body </parent>
+                  <child> left_thrust </child>
+                  <pose relative_to = 'left_thrust'> 0.1 0 0 0 0 0 </pose>
+            </joint>
+
+            <joint name = "right_thrust_joint" type = "fixed">
+                  <parent> body </parent>
+                  <child> right_thrust </child>
+                  <pose relative_to = 'right_thrust'> 0.1 0 0 0 0 0 </pose>
+            </joint>
 
             <plugin name="buoyancy" filename="libBuoyancyPlugin.so">
                   <fluid_density>999.1026</fluid_density>
